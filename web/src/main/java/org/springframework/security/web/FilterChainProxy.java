@@ -179,11 +179,20 @@ public class FilterChainProxy extends GenericFilterBean {
 		this.filterChainValidator.validate(this);
 	}
 
+	/**
+	 * Invokes the {@link Filter#doFilter(ServletRequest, ServletResponse, FilterChain)}
+	 * @param request
+	 * @param response
+	 * @param chain
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		boolean clearContext = request.getAttribute(FILTER_APPLIED) == null;
 		if (!clearContext) {
+			// 执行过滤器
 			doFilterInternal(request, response, chain);
 			return;
 		}
@@ -207,10 +216,20 @@ public class FilterChainProxy extends GenericFilterBean {
 		}
 	}
 
+	/**
+	 * 执行过滤器
+	 * @param request
+	 * @param response
+	 * @param chain
+	 * @throws IOException
+	 * @throws ServletException
+	 */
 	private void doFilterInternal(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		// 获取防火墙
 		FirewalledRequest firewallRequest = this.firewall.getFirewalledRequest((HttpServletRequest) request);
 		HttpServletResponse firewallResponse = this.firewall.getFirewalledResponse((HttpServletResponse) response);
+		// 获取过滤器
 		List<Filter> filters = getFilters(firewallRequest);
 		if (filters == null || filters.isEmpty()) {
 			if (logger.isTraceEnabled()) {
@@ -223,6 +242,7 @@ public class FilterChainProxy extends GenericFilterBean {
 		if (logger.isDebugEnabled()) {
 			logger.debug(LogMessage.of(() -> "Securing " + requestLine(firewallRequest)));
 		}
+		// 重置过滤器链
 		FilterChain reset = (req, res) -> {
 			if (logger.isDebugEnabled()) {
 				logger.debug(LogMessage.of(() -> "Secured " + requestLine(firewallRequest)));
@@ -231,6 +251,7 @@ public class FilterChainProxy extends GenericFilterBean {
 			firewallRequest.reset();
 			chain.doFilter(req, res);
 		};
+		// 执行过滤器
 		this.filterChainDecorator.decorate(reset, filters).doFilter(firewallRequest, firewallResponse);
 	}
 
@@ -241,11 +262,13 @@ public class FilterChainProxy extends GenericFilterBean {
 	 */
 	private List<Filter> getFilters(HttpServletRequest request) {
 		int count = 0;
+		// 获取过滤器链
 		for (SecurityFilterChain chain : this.filterChains) {
 			if (logger.isTraceEnabled()) {
 				logger.trace(LogMessage.format("Trying to match request against %s (%d/%d)", chain, ++count,
 						this.filterChains.size()));
 			}
+			// 匹配过滤器链
 			if (chain.matches(request)) {
 				return chain.getFilters();
 			}
@@ -362,6 +385,11 @@ public class FilterChainProxy extends GenericFilterBean {
 			this.size = additionalFilters.size();
 		}
 
+		/**
+		 * Delegates {@code doFilter} requests to the additional filters that match the
+		 * request and then, once those filters have completed, to the original
+		 * {@code FilterChain}.
+		 */
 		@Override
 		public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
 			if (this.currentPosition == this.size) {
