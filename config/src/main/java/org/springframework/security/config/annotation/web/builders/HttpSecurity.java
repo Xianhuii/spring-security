@@ -145,6 +145,7 @@ import org.springframework.web.filter.CorsFilter;
  * @since 3.2
  * @see EnableWebSecurity
  */
+// SecurityFilterChain的构造器
 public final class HttpSecurity extends AbstractConfiguredSecurityBuilder<DefaultSecurityFilterChain, HttpSecurity>
 		implements SecurityBuilder<DefaultSecurityFilterChain>, HttpSecurityBuilder<HttpSecurity> {
 

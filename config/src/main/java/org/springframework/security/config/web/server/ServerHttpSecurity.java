@@ -299,6 +299,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Yanming Zhou
  * @since 5.0
  */
+// SecurityFilterChain的构造器
 public class ServerHttpSecurity {
 
 	private ServerWebExchangeMatcher securityMatcher = ServerWebExchangeMatchers.anyExchange();
