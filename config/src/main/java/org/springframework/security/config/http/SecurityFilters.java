@@ -24,7 +24,7 @@ package org.springframework.security.config.http;
  * @author Rob Winch
  * @author Evgeniy Cheban
  */
-
+// 内置的过滤器，以及顺序
 enum SecurityFilters {
 
 	FIRST(Integer.MIN_VALUE),
