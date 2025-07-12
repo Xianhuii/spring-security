@@ -244,6 +244,7 @@ public final class AuthorizationManagerBeforeMethodInterceptor implements Author
 		this.securityContextHolderStrategy = () -> securityContextHolderStrategy;
 	}
 
+	// 基于@PreAuthorize，对方法进行权限校验
 	private Object attemptAuthorization(MethodInvocation mi) throws Throwable {
 		this.logger.debug(LogMessage.of(() -> "Authorizing method invocation " + mi));
 		AuthorizationResult result;
@@ -275,6 +276,7 @@ public final class AuthorizationManagerBeforeMethodInterceptor implements Author
 		}
 	}
 
+	// 鉴权失败后的处理
 	private Object handle(MethodInvocation mi, AuthorizationDeniedException denied) {
 		if (this.authorizationManager instanceof MethodAuthorizationDeniedHandler handler) {
 			return handler.handleDeniedInvocation(mi, denied);

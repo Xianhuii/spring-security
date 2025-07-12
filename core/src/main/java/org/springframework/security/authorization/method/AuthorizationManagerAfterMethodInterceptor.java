@@ -179,6 +179,7 @@ public final class AuthorizationManagerAfterMethodInterceptor implements Authori
 		this.securityContextHolderStrategy = () -> strategy;
 	}
 
+	// 基于@PostAuthorize，对方法进行权限校验
 	private Object attemptAuthorization(MethodInvocation mi, Object result) {
 		this.logger.debug(LogMessage.of(() -> "Authorizing method invocation " + mi));
 		MethodInvocationResult object = new MethodInvocationResult(mi, result);

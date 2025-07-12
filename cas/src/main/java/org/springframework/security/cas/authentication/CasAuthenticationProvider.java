@@ -88,6 +88,7 @@ public class CasAuthenticationProvider implements AuthenticationProvider, Initia
 		Assert.notNull(this.messages, "A message source must be set");
 	}
 
+	// cas认证
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		if (!supports(authentication.getClass())) {

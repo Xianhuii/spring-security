@@ -42,6 +42,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
+ * 请求授权过滤器
  * An authorization filter that restricts access to the URL using
  * {@link AuthorizationManager}.
  *
@@ -92,6 +93,7 @@ public class AuthorizationFilter extends GenericFilterBean {
 		String alreadyFilteredAttributeName = getAlreadyFilteredAttributeName();
 		request.setAttribute(alreadyFilteredAttributeName, Boolean.TRUE);
 		try {
+			// 根据请求进行授权校验
 			AuthorizationResult result = this.authorizationManager.authorize(this::getAuthentication, request);
 			this.eventPublisher.publishAuthorizationEvent(this::getAuthentication, request, result);
 			if (result != null && !result.isGranted()) {

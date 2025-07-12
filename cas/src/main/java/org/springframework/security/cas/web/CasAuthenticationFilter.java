@@ -253,6 +253,7 @@ public class CasAuthenticationFilter extends AbstractAuthenticationProcessingFil
 			WebUtils.readAndRespondToProxyReceptorRequest(request, response, this.proxyGrantingTicketStorage);
 			return null;
 		}
+		// 获取cas的service ticket
 		String serviceTicket = obtainArtifact(request);
 		if (!StringUtils.hasText(serviceTicket)) {
 			HttpSession session = request.getSession(false);
@@ -278,6 +279,7 @@ public class CasAuthenticationFilter extends AbstractAuthenticationProcessingFil
 				? CasServiceTicketAuthenticationToken.stateful(serviceTicket)
 				: CasServiceTicketAuthenticationToken.stateless(serviceTicket);
 		authRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
+		// 根据service ticket进行认证
 		return this.getAuthenticationManager().authenticate(authRequest);
 	}
 

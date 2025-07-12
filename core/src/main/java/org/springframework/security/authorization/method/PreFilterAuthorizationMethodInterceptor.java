@@ -125,6 +125,7 @@ public final class PreFilterAuthorizationMethodInterceptor implements Authorizat
 	 * {@link MethodInvocation} specifies.
 	 * @param mi the {@link MethodInvocation} to check
 	 */
+	// 基于@PreFilter对请求参数进行过滤
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		PreFilterExpressionAttributeRegistry.PreFilterExpressionAttribute attribute = this.registry.getAttribute(mi);

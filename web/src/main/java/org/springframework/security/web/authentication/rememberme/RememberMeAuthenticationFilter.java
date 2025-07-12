@@ -114,10 +114,12 @@ public class RememberMeAuthenticationFilter extends GenericFilterBean implements
 			chain.doFilter(request, response);
 			return;
 		}
+		// 校验remember-me token是否存在，进行自动登录，获取用户信息
 		Authentication rememberMeAuth = this.rememberMeServices.autoLogin(request, response);
 		if (rememberMeAuth != null) {
 			// Attempt authentication via AuthenticationManager
 			try {
+				// 通过AuthenticationManager进行认证
 				rememberMeAuth = this.authenticationManager.authenticate(rememberMeAuth);
 				this.sessionStrategy.onAuthentication(rememberMeAuth, request, response);
 				// Store to SecurityContextHolder

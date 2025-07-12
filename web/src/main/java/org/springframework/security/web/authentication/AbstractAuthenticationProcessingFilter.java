@@ -237,8 +237,9 @@ public abstract class AbstractAuthenticationProcessingFilter extends GenericFilt
 			return;
 		}
 		try {
+			// 认证
 			Authentication authenticationResult = attemptAuthentication(request, response);
-			if (authenticationResult == null) {
+			if (authenticationResult == null) { // 认证失败
 				if (this.continueChainWhenNoAuthenticationResult) {
 					chain.doFilter(request, response);
 					return;
@@ -246,11 +247,13 @@ public abstract class AbstractAuthenticationProcessingFilter extends GenericFilt
 				// return immediately as subclass has indicated that it hasn't completed
 				return;
 			}
+			// 认证成功，调用SessionAuthenticationStrategy的onAuthentication方法
 			this.sessionStrategy.onAuthentication(authenticationResult, request, response);
 			// Authentication success
 			if (this.continueChainBeforeSuccessfulAuthentication) {
 				chain.doFilter(request, response);
 			}
+			// 认证成功
 			successfulAuthentication(request, response, chain, authenticationResult);
 		}
 		catch (InternalAuthenticationServiceException failed) {
@@ -307,10 +310,12 @@ public abstract class AbstractAuthenticationProcessingFilter extends GenericFilt
 	 */
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, IOException, ServletException {
+		// 从请求中获取认证信息
 		Authentication authentication = this.authenticationConverter.convert(request);
 		if (authentication == null) {
 			return null;
 		}
+		// 执行认证逻辑
 		Authentication result = this.authenticationManager.authenticate(authentication);
 		if (result == null) {
 			throw new ServletException("AuthenticationManager should not return null Authentication object.");
@@ -342,6 +347,7 @@ public abstract class AbstractAuthenticationProcessingFilter extends GenericFilt
 	 */
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 			Authentication authResult) throws IOException, ServletException {
+		// 保存认证信息
 		SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
 		context.setAuthentication(authResult);
 		this.securityContextHolderStrategy.setContext(context);
@@ -349,6 +355,7 @@ public abstract class AbstractAuthenticationProcessingFilter extends GenericFilt
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug(LogMessage.format("Set SecurityContextHolder to %s", authResult));
 		}
+		// 设置remember-me信息
 		this.rememberMeServices.loginSuccess(request, response, authResult);
 		if (this.eventPublisher != null) {
 			this.eventPublisher.publishEvent(new InteractiveAuthenticationSuccessEvent(authResult, this.getClass()));

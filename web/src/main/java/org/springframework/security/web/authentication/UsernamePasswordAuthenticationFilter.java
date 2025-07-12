@@ -76,6 +76,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
 		if (this.postOnly && !request.getMethod().equals("POST")) {
 			throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 		}
+		// 获取用户名和密码
 		String username = obtainUsername(request);
 		username = (username != null) ? username.trim() : "";
 		String password = obtainPassword(request);
@@ -84,6 +85,7 @@ public class UsernamePasswordAuthenticationFilter extends AbstractAuthentication
 				password);
 		// Allow subclasses to set the "details" property
 		setDetails(request, authRequest);
+		// 执行认证
 		return this.getAuthenticationManager().authenticate(authRequest);
 	}
 

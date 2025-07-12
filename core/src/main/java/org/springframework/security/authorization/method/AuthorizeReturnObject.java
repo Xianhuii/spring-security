@@ -22,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 对返回值进行授权管理
  * Wraps Spring Security method authorization advice around the return object of any
  * method this annotation is applied to.
  *

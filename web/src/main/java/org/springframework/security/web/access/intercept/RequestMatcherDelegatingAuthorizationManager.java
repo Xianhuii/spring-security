@@ -62,11 +62,13 @@ public final class RequestMatcherDelegatingAuthorizationManager implements Autho
 		this.mappings = mappings;
 	}
 
+	// 对请求进行授权判断
 	@Override
 	public AuthorizationResult authorize(Supplier<Authentication> authentication, HttpServletRequest request) {
 		if (this.logger.isTraceEnabled()) {
 			this.logger.trace(LogMessage.format("Authorizing %s", requestLine(request)));
 		}
+		// 遍历所有RequestMatcherEntry，找到匹配的RequestMatcherEntry，然后使用其对应的AuthorizationManager进行授权判断
 		for (RequestMatcherEntry<AuthorizationManager<RequestAuthorizationContext>> mapping : this.mappings) {
 
 			RequestMatcher matcher = mapping.getRequestMatcher();

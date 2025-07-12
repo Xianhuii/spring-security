@@ -75,6 +75,7 @@ public final class PreAuthorizeReactiveAuthorizationManager
 	 * @return a {@link Mono} of the {@link AuthorizationResult} or an empty {@link Mono}
 	 * if the {@link PreAuthorize} annotation is not present
 	 */
+	// 对@PreAuthorize进行授权判断
 	@Override
 	public Mono<AuthorizationResult> authorize(Mono<Authentication> authentication, MethodInvocation mi) {
 		ExpressionAttribute attribute = this.registry.getAttribute(mi);

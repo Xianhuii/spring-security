@@ -197,6 +197,7 @@ public class ExceptionTranslationFilter extends GenericFilterBean implements Mes
 					this.messages.getMessage("ExceptionTranslationFilter.insufficientAuthentication",
 							"Full authentication is required to access this resource"));
 			ex.setAuthenticationRequest(authentication);
+			// 发送开始认证请求
 			sendStartAuthentication(request, response, chain, ex);
 		}
 		else {
@@ -205,6 +206,7 @@ public class ExceptionTranslationFilter extends GenericFilterBean implements Mes
 						LogMessage.format("Sending %s to access denied handler since access is denied", authentication),
 						exception);
 			}
+			// 拒绝访问处理器：发送拒绝访问响应
 			this.accessDeniedHandler.handle(request, response, exception);
 		}
 	}
@@ -216,6 +218,7 @@ public class ExceptionTranslationFilter extends GenericFilterBean implements Mes
 		SecurityContext context = this.securityContextHolderStrategy.createEmptyContext();
 		this.securityContextHolderStrategy.setContext(context);
 		this.requestCache.saveRequest(request, response);
+		// 认证入口：cas,basic, bearer-token这些
 		this.authenticationEntryPoint.commence(request, response, reason);
 	}
 

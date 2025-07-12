@@ -74,9 +74,13 @@ public class CasAuthenticationEntryPoint implements AuthenticationEntryPoint, In
 	@Override
 	public final void commence(final HttpServletRequest servletRequest, HttpServletResponse response,
 			AuthenticationException authenticationException) throws IOException {
+		// 创建服务器地址
 		String urlEncodedService = createServiceUrl(servletRequest, response);
+		// 创建重定向地址
 		String redirectUrl = createRedirectUrl(urlEncodedService);
+		// 自定义处理逻辑
 		preCommence(servletRequest, response);
+		// 设置重定向响应头，响应客户端
 		this.redirectStrategy.sendRedirect(servletRequest, response, redirectUrl);
 	}
 

@@ -84,6 +84,7 @@ public final class PostAuthorizeAuthorizationManager
 	 * @return an {@link AuthorizationDecision} or {@code null} if the
 	 * {@link PostAuthorize} annotation is not present
 	 */
+	// 对@PostAuthorize进行授权判断
 	@Override
 	public AuthorizationResult authorize(Supplier<Authentication> authentication, MethodInvocationResult mi) {
 		ExpressionAttribute attribute = this.registry.getAttribute(mi.getMethodInvocation());

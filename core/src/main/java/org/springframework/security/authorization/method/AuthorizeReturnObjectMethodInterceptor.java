@@ -72,6 +72,7 @@ public final class AuthorizeReturnObjectMethodInterceptor implements Authorizati
 			return null;
 		}
 		Assert.notNull(this.authorizationProxyFactory, "authorizationProxyFactory cannot be null");
+		// 处理返回值，校验返回值中的权限
 		return this.authorizationProxyFactory.proxy(result);
 	}
 

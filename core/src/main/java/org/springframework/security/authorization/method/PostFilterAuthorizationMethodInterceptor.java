@@ -125,6 +125,7 @@ public final class PostFilterAuthorizationMethodInterceptor implements Authoriza
 	 * @param mi the {@link MethodInvocation} to check check
 	 * @return filtered {@code returnedObject}
 	 */
+	// 基于@PostFilter对返回值进行过滤
 	@Override
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		Object returnedObject = mi.proceed();

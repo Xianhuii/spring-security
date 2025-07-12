@@ -66,6 +66,7 @@ public final class SecuredAuthorizationManager implements AuthorizationManager<M
 		this.authoritiesAuthorizationManager = authoritiesAuthorizationManager;
 	}
 
+	// 基于@Secured（标注在方法上支持的权限范围），对方法进行授权判断
 	@Override
 	public AuthorizationResult authorize(Supplier<Authentication> authentication, MethodInvocation mi) {
 		Set<String> authorities = getAuthorities(mi);

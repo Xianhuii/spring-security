@@ -70,6 +70,7 @@ public final class WebExpressionAuthorizationManager implements AuthorizationMan
 	 * @return an {@link ExpressionAuthorizationDecision} based on the evaluated
 	 * expression
 	 */
+	// 根据请求进行授权判断
 	@Override
 	public AuthorizationResult authorize(Supplier<Authentication> authentication, RequestAuthorizationContext context) {
 		EvaluationContext ctx = this.expressionHandler.createEvaluationContext(authentication, context);

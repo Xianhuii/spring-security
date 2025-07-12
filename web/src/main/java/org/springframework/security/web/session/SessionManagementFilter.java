@@ -41,6 +41,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
+ * 会话管理过滤器
  * Detects that a user has been authenticated since the start of the request and, if they
  * have, calls the configured {@link SessionAuthenticationStrategy} to perform any
  * session-related activity such as activating session-fixation protection mechanisms or
@@ -87,17 +88,21 @@ public class SessionManagementFilter extends GenericFilterBean {
 
 	private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		// 校验当前过滤流程是否在Spring Security的过滤器链中
 		if (request.getAttribute(FILTER_APPLIED) != null) {
 			chain.doFilter(request, response);
 			return;
 		}
 		request.setAttribute(FILTER_APPLIED, Boolean.TRUE);
-		if (!this.securityContextRepository.containsContext(request)) {
+		// 检查当前请求的SecurityContextRepository中是否存在SecurityContext
+		if (!this.securityContextRepository.containsContext(request)) { // 不存在SecurityContext
+			// 检查SecurityContextHolder中是否存在Authentication
 			Authentication authentication = this.securityContextHolderStrategy.getContext().getAuthentication();
-			if (this.trustResolver.isAuthenticated(authentication)) {
+			if (this.trustResolver.isAuthenticated(authentication)) { // 存在Authentication
 				// The user has been authenticated during the current request, so call the
 				// session strategy
 				try {
+					// 调用SessionAuthenticationStrategy的onAuthentication方法
 					this.sessionAuthenticationStrategy.onAuthentication(authentication, request, response);
 				}
 				catch (SessionAuthenticationException ex) {
@@ -110,10 +115,11 @@ public class SessionManagementFilter extends GenericFilterBean {
 				// Eagerly save the security context to make it available for any possible
 				// re-entrant requests which may occur before the current request
 				// completes. SEC-1396.
+				// 保存SecurityContext到SecurityContextRepository中
 				this.securityContextRepository.saveContext(this.securityContextHolderStrategy.getContext(), request,
 						response);
 			}
-			else {
+			else { // 不存在Authentication
 				// No security context or authentication present. Check for a session
 				// timeout
 				if (request.getRequestedSessionId() != null && !request.isRequestedSessionIdValid()) {
@@ -122,6 +128,7 @@ public class SessionManagementFilter extends GenericFilterBean {
 								request.getRequestedSessionId()));
 					}
 					if (this.invalidSessionStrategy != null) {
+						// 调用InvalidSessionStrategy的onInvalidSessionDetected方法
 						this.invalidSessionStrategy.onInvalidSessionDetected(request, response);
 						return;
 					}

@@ -82,6 +82,7 @@ public final class Jsr250AuthorizationManager implements AuthorizationManager<Me
 	/**
 	 * {@inheritDoc}
 	 */
+	// 基于@DenyAll、@PermitAll、@RolesAllowed，对方法进行授权判断
 	@Override
 	public AuthorizationResult authorize(Supplier<Authentication> authentication, MethodInvocation methodInvocation) {
 		AuthorizationManager<MethodInvocation> delegate = this.registry.getManager(methodInvocation);

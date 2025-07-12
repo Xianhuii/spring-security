@@ -124,7 +124,9 @@ public abstract class AbstractRememberMeServices
 	 */
 	@Override
 	public Authentication autoLogin(HttpServletRequest request, HttpServletResponse response) {
+		// 获取remember-me cookie
 		String rememberMeCookie = extractRememberMeCookie(request);
+		// remember-me cookie不存在
 		if (rememberMeCookie == null) {
 			return null;
 		}
@@ -135,10 +137,13 @@ public abstract class AbstractRememberMeServices
 			return null;
 		}
 		try {
+			// 解码remember-me cookie
 			String[] cookieTokens = decodeCookie(rememberMeCookie);
+			// 根据token获取用户信息
 			UserDetails user = processAutoLoginCookie(cookieTokens, request, response);
 			this.userDetailsChecker.check(user);
 			this.logger.debug("Remember-me cookie accepted");
+			// 创建认证信息
 			return createSuccessfulAuthentication(request, user);
 		}
 		catch (CookieTheftException ex) {
@@ -282,6 +287,7 @@ public abstract class AbstractRememberMeServices
 			this.logger.debug("Remember-me login not requested.");
 			return;
 		}
+		// 设置remember-me，保存到cookie
 		onLoginSuccess(request, response, successfulAuthentication);
 	}
 

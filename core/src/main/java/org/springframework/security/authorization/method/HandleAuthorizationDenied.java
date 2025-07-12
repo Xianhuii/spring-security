@@ -24,6 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * 指定鉴权失败后的处理方式
  * Annotation for specifying handling behavior when an authorization denied happens in
  * method security or an
  * {@link org.springframework.security.authorization.AuthorizationDeniedException} is

@@ -48,6 +48,7 @@ import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
+ * 用户身份已在访问应用前由外部系统（如Web服务器、容器或单点登录系统）完成验证，Spring Security仅需基于已有认证结果执行授权和权限管理
  * Base class for processing filters that handle pre-authenticated authentication
  * requests, where it is assumed that the principal has already been authenticated by an
  * external system.
@@ -138,11 +139,13 @@ public abstract class AbstractPreAuthenticatedProcessingFilter extends GenericFi
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
+		// 校验是否为预授权请求
 		if (this.requiresAuthenticationRequestMatcher.matches((HttpServletRequest) request)) {
 			if (logger.isDebugEnabled()) {
 				logger.debug(LogMessage
 					.of(() -> "Authenticating " + this.securityContextHolderStrategy.getContext().getAuthentication()));
 			}
+			// 认证预授权请求
 			doAuthenticate((HttpServletRequest) request, (HttpServletResponse) response);
 		}
 		else {
@@ -190,18 +193,22 @@ public abstract class AbstractPreAuthenticatedProcessingFilter extends GenericFi
 	 */
 	private void doAuthenticate(HttpServletRequest request, HttpServletResponse response)
 			throws IOException, ServletException {
+		// 获取预授权用户信息
 		Object principal = getPreAuthenticatedPrincipal(request);
 		if (principal == null) {
 			this.logger.debug("No pre-authenticated principal found in request");
 			return;
 		}
 		this.logger.debug(LogMessage.format("preAuthenticatedPrincipal = %s, trying to authenticate", principal));
+		// 获取预授权用户凭证
 		Object credentials = getPreAuthenticatedCredentials(request);
 		try {
 			PreAuthenticatedAuthenticationToken authenticationRequest = new PreAuthenticatedAuthenticationToken(
 					principal, credentials);
 			authenticationRequest.setDetails(this.authenticationDetailsSource.buildDetails(request));
+			// 通过AuthenticationManager对预授权用户进行认证（根据预授权用户获取内部用户信息）
 			Authentication authenticationResult = this.authenticationManager.authenticate(authenticationRequest);
+			// 认证成功，保存认证结果到上下文
 			successfulAuthentication(request, response, authenticationResult);
 		}
 		catch (AuthenticationException ex) {

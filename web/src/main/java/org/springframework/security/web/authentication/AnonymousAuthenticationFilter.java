@@ -41,6 +41,7 @@ import org.springframework.util.function.SingletonSupplier;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
+ * 匿名认证机制，为未登录用户提供一个匿名的Authentication，避免频繁进行null校验。
  * Detects if there is no {@code Authentication} object in the
  * {@code SecurityContextHolder}, and populates it with one if needed.
  *
@@ -94,7 +95,9 @@ public class AnonymousAuthenticationFilter extends GenericFilterBean implements 
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
 			throws IOException, ServletException {
+		// 获取SecurityContext
 		Supplier<SecurityContext> deferredContext = this.securityContextHolderStrategy.getDeferredContext();
+		// 设置匿名认证信息
 		this.securityContextHolderStrategy
 			.setDeferredContext(defaultWithAnonymous((HttpServletRequest) req, deferredContext));
 		chain.doFilter(req, res);
@@ -111,6 +114,7 @@ public class AnonymousAuthenticationFilter extends GenericFilterBean implements 
 	private SecurityContext defaultWithAnonymous(HttpServletRequest request, SecurityContext currentContext) {
 		Authentication currentAuthentication = currentContext.getAuthentication();
 		if (currentAuthentication == null) {
+			// 创建匿名认证信息
 			Authentication anonymous = createAuthentication(request);
 			if (this.logger.isTraceEnabled()) {
 				this.logger.trace(LogMessage.of(() -> "Set SecurityContextHolder to " + anonymous));
@@ -132,6 +136,7 @@ public class AnonymousAuthenticationFilter extends GenericFilterBean implements 
 	}
 
 	protected Authentication createAuthentication(HttpServletRequest request) {
+		// 创建匿名认证信息
 		AnonymousAuthenticationToken token = new AnonymousAuthenticationToken(this.key, this.principal,
 				this.authorities);
 		token.setDetails(this.authenticationDetailsSource.buildDetails(request));

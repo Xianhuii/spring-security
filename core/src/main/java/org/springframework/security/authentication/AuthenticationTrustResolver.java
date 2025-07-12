@@ -26,6 +26,7 @@ import org.springframework.security.core.Authentication;
 public interface AuthenticationTrustResolver {
 
 	/**
+	 * 校验当前用户是否为匿名认证用户
 	 * Indicates whether the passed <code>Authentication</code> token represents an
 	 * anonymous user. Typically the framework will call this method if it is trying to
 	 * decide whether an <code>AccessDeniedException</code> should result in a final

@@ -51,6 +51,8 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 /**
+ * 基于JAAS框架实现的认证与授权服务提供机制，用于将安全逻辑（如用户身份验证和权限控制）集成到Java应用程序中。
+ * 通过标准化接口实现安全逻辑的“可插拔性”，允许开发者灵活切换底层安全机制（如数据库、LDAP、Kerberos等）而无需修改应用代码。
  * An {@link AuthenticationProvider} implementation that retrieves user details from a
  * JAAS login configuration.
  *
