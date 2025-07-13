@@ -157,6 +157,7 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		Authentication authenticationRequest;
 		try {
+			// 获取用户认证信息
 			authenticationRequest = this.authenticationConverter.convert(request);
 		}
 		catch (OAuth2AuthenticationException invalid) {
@@ -172,6 +173,7 @@ public class BearerTokenAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		try {
+			// 认证
 			AuthenticationManager authenticationManager = this.authenticationManagerResolver.resolve(request);
 			Authentication authenticationResult = authenticationManager.authenticate(authenticationRequest);
 			if (isDPoPBoundAccessToken(authenticationResult)) {
